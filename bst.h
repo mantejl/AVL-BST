@@ -500,6 +500,7 @@ void BinarySearchTree<Key, Value>::remove(const Key &key)
     {
         return;
     }
+
     Node<Key, Value> *c = root_;
 
     while (c != NULL)
@@ -523,74 +524,35 @@ void BinarySearchTree<Key, Value>::remove(const Key &key)
         return;
     }
 
-label:;
+    if(c->getRight() != NULL && c->getLeft() != NULL) {
+        nodeSwap(c,predecessor(c)); 
+    }
 
-    if (c->getLeft() == NULL && c->getRight() == NULL)
-    {
-        if (c->getParent() == NULL)
-        {
-            root_ = NULL;
-        }
-        else if ((c->getParent())->getLeft() == c)
-        {
-            (c->getParent())->setLeft(NULL);
-        }
-        else if ((c->getParent())->getRight() == c)
-        {
-            (c->getParent())->setLeft(NULL);
-        }
-        delete c;
-        return;
+    Node <Key, Value> * one; 
+    if(c->getRight()!=NULL && c->getLeft()==NULL){
+        one = c->getRight();
+    } else if (c->getRight()==NULL && c->getLeft()!=NULL) {
+        one = c->getLeft(); 
+    } else if (c->getRight() == NULL && c->getLeft() == NULL) {
+        one = NULL; 
     }
-    else if (c->getLeft() != NULL && c->getRight() == NULL)
-    {
-        if (c->getParent() == NULL)
-        {
-            root_ = c->getLeft();
-            c->setParent(NULL);
-        }
-        else
-        {
-            c->getLeft()->setParent(c->getParent());
-            if ((c->getParent())->getLeft() == c)
-            {
-                c->getParent()->setLeft(c->getLeft());
-            }
-            else
-            {
-                c->getParent()->setRight(c->getLeft());
-            }
-            delete c;
+
+    Node <Key, Value> * two = c -> getParent(); 
+    if (two == NULL) {
+        root_ = c; 
+    } else {
+        if (c->getParent()->getRight() == c) {
+            two->setRight(one); 
+        } else if (c->getParent()->getLeft() == c) {
+            two->setLeft(one); 
         }
     }
-    else if (c->getLeft() == NULL && c->getRight() != NULL)
-    {
-        if (c->getParent() == NULL)
-        {
-            root_ = c->getRight();
-            c->setParent(NULL);
-        }
-        else
-        {
-            c->getRight()->setParent(c->getParent());
-            if ((c->getParent())->getLeft() == c)
-            {
-                c->getParent()->setLeft(c->getRight());
-            }
-            else
-            {
-                c->getParent()->setRight(c->getRight());
-            }
-        }
-        delete c;
+    if (one != NULL) {
+        one->setParent(two); 
     }
-    else if (c->getLeft() != NULL && c->getRight() != NULL)
-    {
-        Node<Key, Value> *check = predecessor(c);
-        nodeSwap(c, check);
-        goto label;
-    }
+    delete c; 
 }
+
 template <class Key, class Value>
 Node<Key, Value> *
 BinarySearchTree<Key, Value>::predecessor(Node<Key, Value> *current)
