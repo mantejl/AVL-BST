@@ -74,4 +74,5 @@ hw4_tests/
 equal-paths-test
 bst-test
 *.dSYM
-
+.clang-format
+.clang-tidy
