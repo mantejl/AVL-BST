@@ -643,16 +643,12 @@ BinarySearchTree<Key, Value>::successor(Node<Key, Value> *current)
 template <typename Key, typename Value>
 void BinarySearchTree<Key, Value>::clear()
 {
-    while (root_ != nullptr)
-    {
-        remove(root_->getKey());
-    }
+    deleteNode(root_); 
 }
 
 template <typename Key, typename Value>
 void BinarySearchTree<Key, Value>::deleteNode(Node<Key, Value> *c)
 {
-    Node<Key, Value> *del = c;
     if (c == NULL)
     {
         return;
@@ -660,7 +656,7 @@ void BinarySearchTree<Key, Value>::deleteNode(Node<Key, Value> *c)
     deleteNode(c->getLeft());
     deleteNode(c->getRight());
     c = NULL;
-    delete del;
+    delete c;
 }
 
 /**
