@@ -442,45 +442,54 @@ Value const &BinarySearchTree<Key, Value>::operator[](const Key &key) const
 template <class Key, class Value>
 void BinarySearchTree<Key, Value>::insert(const std::pair<const Key, Value> &keyValuePair)
 {
-
+    // checking if insert is null 
     if (root_ == nullptr)
     {
+        // if it is, then we add new node 
         root_ = new Node<Key, Value>(keyValuePair.first, keyValuePair.second, NULL);
         return;
     }
     else
     {
+        // creating temp node 
         Node<Key, Value> *c = root_;
 
+        // iterating through while true 
         while (true)
         {
-            if (keyValuePair.first > c->getKey())
+            // checking if c key is greater 
+            if (keyValuePair.first < c->getKey())
             {
-                if (c->getRight() == NULL)
-                {
-                    Node<Key, Value> *ins = new Node<Key, Value>(keyValuePair.first, keyValuePair.second, c);
-                    c->setRight(ins);
-                    break;
-                }
-                else
-                {
-                    c = c->getRight();
-                }
-            }
-            else if (keyValuePair.first < c->getKey())
-            {
+                // if c getLeft is null, then we add a new node 
                 if (c->getLeft() == NULL)
                 {
                     Node<Key, Value> *ins2 = new Node<Key, Value>(keyValuePair.first, keyValuePair.second, c);
                     c->setLeft(ins2);
                     break;
                 }
+                // if not then we iterate to next left 
                 else
                 {
                     c = c->getLeft();
                 }
             }
-            else
+            // checking if c key is less 
+            else if (keyValuePair.first > c->getKey())
+            {
+                // if c getRight is null, then we add a new node
+                if (c->getRight() == NULL)
+                {
+                    Node<Key, Value> *ins = new Node<Key, Value>(keyValuePair.first, keyValuePair.second, c);
+                    c->setRight(ins);
+                    break;
+                }
+                // if not then we iterate to next left 
+                else
+                {
+                    c = c->getRight();
+                }
+            }
+            else // both of them are the same 
             {
                 c->setValue(keyValuePair.second);
                 break;
@@ -496,42 +505,52 @@ void BinarySearchTree<Key, Value>::insert(const std::pair<const Key, Value> &key
 template <typename Key, typename Value>
 void BinarySearchTree<Key, Value>::remove(const Key &key)
 {
+    // root check
+    if (root_ == NULL) {
+        return; 
+    }
+
+    // finding the key 
     Node<Key, Value> *c = this->internalFind(key); 
 
+    // if c is null then we return 
     if (c == NULL) {
         return; 
     }
 
-    if(c->getRight() != NULL && c->getLeft() != NULL) {
+    // case for when there are 2 children 
+    if(c->getLeft() != NULL && c->getRight() != NULL) {
         nodeSwap(c,predecessor(c)); 
     }
 
+    // case for when there is one child 
+    // creating temp node to store it 
     Node <Key, Value> * one; 
-    if(c->getRight()!=NULL && c->getLeft()==NULL){
-        one = c->getRight();
+    if (c->getRight() == NULL && c->getLeft() == NULL) {
+        one = NULL; 
     } else if (c->getRight()==NULL && c->getLeft()!=NULL) {
         one = c->getLeft(); 
-    } else if (c->getRight() == NULL && c->getLeft() == NULL) {
-        one = NULL; 
-    }
+    } else if(c->getRight()!=NULL && c->getLeft()==NULL){
+        one = c->getRight();
+    } 
 
+    // updating the parent node to complete the promote functionality  
     Node <Key, Value> * two = c -> getParent(); 
     if (two == NULL) {
         root_ = one; 
     } else {
-        if (c->getParent()->getRight() == c) {
-            two->setRight(one); 
-        } else if (c->getParent()->getLeft() == c) {
+        if (c->getParent()->getLeft() == c) {
             two->setLeft(one); 
-        }
+        } else if (c->getParent()->getRight() == c) {
+            two->setRight(one); 
+        } 
     }
+
     if (one != NULL) {
         one->setParent(two); 
     }
-    root_ = NULL; 
+    // deleting c 
     delete c; 
-    delete one; 
-    delete two; 
 }
 
 template <class Key, class Value>
