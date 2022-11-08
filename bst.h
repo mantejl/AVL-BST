@@ -496,32 +496,10 @@ void BinarySearchTree<Key, Value>::insert(const std::pair<const Key, Value> &key
 template <typename Key, typename Value>
 void BinarySearchTree<Key, Value>::remove(const Key &key)
 {
-    if (root_ == NULL)
-    {
-        return;
-    }
+    Node<Key, Value> *c = this->internalFind(key); 
 
-    Node<Key, Value> *c = root_;
-
-    while (c != NULL)
-    {
-        if (c->getKey() == key)
-        {
-            break;
-        }
-        if (c->getKey() < key)
-        {
-            c = c->getLeft();
-        }
-        else if (c->getKey() > key)
-        {
-            c = c->getRight();
-        }
-    }
-
-    if (c == NULL)
-    {
-        return;
+    if (c == NULL) {
+        return; 
     }
 
     if(c->getRight() != NULL && c->getLeft() != NULL) {
@@ -539,7 +517,7 @@ void BinarySearchTree<Key, Value>::remove(const Key &key)
 
     Node <Key, Value> * two = c -> getParent(); 
     if (two == NULL) {
-        root_ = c; 
+        root_ = one; 
     } else {
         if (c->getParent()->getRight() == c) {
             two->setRight(one); 
@@ -678,12 +656,13 @@ Node<Key, Value> *BinarySearchTree<Key, Value>::internalFind(const Key &key) con
 template <typename Key, typename Value>
 int BinarySearchTree<Key, Value>::calculateHeight(Node<Key, Value> *parameter) const
 {
-    if (root_ == NULL)
+    if (parameter == NULL)
     {
         return 0;
     }
-    int l = calculateHeight(root_->getLeft());
-    int r = calculateHeight(root_->getRight());
+    
+    int l = calculateHeight(parameter->getLeft());
+    int r = calculateHeight(parameter->getRight()); 
 
     if (l == -1)
     {
@@ -711,8 +690,16 @@ bool BinarySearchTree<Key, Value>::isBalanced() const
         return true;
     }
 
-    int l = calculateHeight(root_->getLeft());
-    int r = calculateHeight(root_->getRight());
+    if(root_->getRight() == NULL && root_->getLeft() == NULL) {
+        return true; 
+    }
+
+    if ((root_->getRight() == NULL && root_->getLeft() != NULL) || (root_->getRight() != NULL && root_->getLeft() == NULL)) {
+        return false; 
+    }
+
+    int l = calculateHeight(root_->getLeft()); 
+    int r = calculateHeight(root_->getRight()); 
 
     return (l != -1 && r != -1);
 }
