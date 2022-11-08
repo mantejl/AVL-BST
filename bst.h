@@ -528,7 +528,10 @@ void BinarySearchTree<Key, Value>::remove(const Key &key)
     if (one != NULL) {
         one->setParent(two); 
     }
+    root_ = NULL; 
     delete c; 
+    delete one; 
+    delete two; 
 }
 
 template <class Key, class Value>
