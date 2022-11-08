@@ -245,7 +245,7 @@ protected:
     virtual void nodeSwap(Node<Key, Value> *n1, Node<Key, Value> *n2);
 
     // Add helper functions here
-    int calculateHeight(Node<Key, Value> *r);
+    int calculateHeight(Node<Key, Value> *r) const;
     void deleteNode(Node<Key, Value> *c);
 
 protected:
@@ -301,12 +301,15 @@ BinarySearchTree<Key, Value>::iterator::operator->() const
  * Checks if 'this' iterator's internals have the same value
  * as 'rhs'
  */
-template <class Key, class Value>
-bool BinarySearchTree<Key, Value>::iterator::operator==(
-    const BinarySearchTree<Key, Value>::iterator &rhs) const
+template<class Key, class Value>
+bool
+BinarySearchTree<Key, Value>::iterator::operator==(
+    const BinarySearchTree<Key, Value>::iterator& rhs) const
 {
-    return (this->current_ == rhs.current_);
+    // TODO
+    return(this->current_ == rhs.current_);
 }
+
 
 /**
  * Checks if 'this' iterator's internals have a different value
@@ -688,14 +691,13 @@ BinarySearchTree<Key, Value>::getSmallestNode() const
 template <typename Key, typename Value>
 Node<Key, Value> *BinarySearchTree<Key, Value>::internalFind(const Key &key) const
 {
-    Node<Key, Value> *c = root_;
-    if (c == NULL || c->getKey() == NULL)
+    
+    if (root_ == NULL || root_->getKey() == key)
     {
-        return NULL;
-    }
-
-    while (c != NULL)
-    {
+        return root_;
+    } else {
+        Node<Key, Value> *c = root_;
+        while (c != NULL) {
         if (c->getKey() == key)
         {
             return c;
@@ -711,9 +713,12 @@ Node<Key, Value> *BinarySearchTree<Key, Value>::internalFind(const Key &key) con
     }
     return NULL;
 }
+    
+    
+}
 
 template <typename Key, typename Value>
-int BinarySearchTree<Key, Value>::calculateHeight(Node<Key, Value> *parameter)
+int BinarySearchTree<Key, Value>::calculateHeight(Node<Key, Value> *parameter) const
 {
     if (root_ == NULL)
     {
