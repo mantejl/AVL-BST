@@ -579,12 +579,16 @@ BinarySearchTree<Key, Value>::predecessor(Node<Key, Value> *current)
     // if not, then we walk up the chain and find the first node
     // who is a right child of his parent 
     Node<Key, Value> *cur = current;
-    cur = cur->getParent();
-    while (cur->getRight() == NULL)
-    {
+    while (cur->getParent() != nullptr){
+      if (cur->getParent()->getRight() == cur){
+        return cur->getParent();
+      }
+      else{
         cur = cur->getParent();
+      }
     }
-    return cur->getParent();
+    return nullptr;
+
 }
 
 
@@ -606,13 +610,17 @@ BinarySearchTree<Key, Value>::successor(Node<Key, Value> *current)
     }
 
     // if not, then we walk up the chain and find the first node 
-    // who is a left child of his parent 
-    Node<Key, Value> *cur = current->getParent();
-    while (cur->getLeft() == NULL)
-    {
+    // who is a left child of his parent
+		Node<Key, Value> *cur = current;
+    while (cur->getParent() != nullptr){
+      if (cur->getParent()->getLeft() == cur){
+        return cur->getParent();
+      }
+      else{
         cur = cur->getParent();
+      }
     }
-    return cur->getParent();
+    return nullptr; 
 }
 
 /**
@@ -647,17 +655,11 @@ template <typename Key, typename Value>
 Node<Key, Value> *
 BinarySearchTree<Key, Value>::getSmallestNode() const
 {
-    // root null check
-    if (root_ == NULL)
-    {
-        return NULL; 
-    }
-
     // iterating all the way to the left
     Node<Key, Value> *c = root_;
-    while (c != NULL)
+    while (c ->getLeft() != NULL)
     {
-        c = c->getLeft();
+			c = c->getLeft();
     }
     return c;
 }
