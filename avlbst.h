@@ -329,99 +329,98 @@ void AVLTree<Key, Value>::nodeSwap(AVLNode<Key, Value> *n1, AVLNode<Key, Value> 
 }
 
 template <class Key, class Value>
-void AVLTree<Key, Value>::insertFix(AVLNode<Key, Value> *p, AVLNode<Key, Value> *n)
+void AVLTree<Key, Value>::insertFix(AVLNode<Key, Value> *parent, AVLNode<Key, Value> *n)
 {
-    if ((p->getBalance() == 1 || p->getBalance() == -1 || p->getBalance() == 0) && (n->getBalance() == 1 || n->getBalance() == -1 || n->getBalance() == 0))
+    if ((parent->getBalance() == 1 || parent->getBalance() == 0 || parent->getBalance() == -1) && (n->getBalance() == 1 || n->getBalance() == 0 || n->getBalance() == -1))
     {
-        if (p == nullptr || p->getParent() == nullptr)
+        if ((parent == nullptr) || (parent->getParent() == nullptr))
         {
             return;
         }
-
-        AVLNode<Key, Value> *g = p->getParent();
-        if (g->getLeft() == p)
+        AVLNode<Key, Value> *grandP = parent->getParent();
+        if (grandP->getLeft() == parent)
         {
-            g->updateBalance(-1);
-            if (g->getBalance() == 0)
+            grandP->updateBalance(-1);
+            if (grandP->getBalance() == 0)
             {
                 return;
             }
-            else if (g->getBalance() == -1)
+            else if (grandP->getBalance() == -1)
             {
-                insertFix(g, p);
+                insertFix(grandP, parent);
             }
-            else if (g->getBalance() == -2)
+            else if (grandP->getBalance() == -2)
             {
-                if (g->getLeft() == p && p->getLeft() == n)
-                {
-                    rotateRight(g);
-                    g->setBalance(0);
-                    p->setBalance(0);
+                if (grandP->getLeft() == parent && parent->getLeft() == n)
+                { // zig zig case
+                    rotateRight(grandP);
+                    grandP->setBalance(0);
+                    parent->setBalance(0);
                 }
-                else if (g->getLeft() == p && p->getRight() == n)
-                {
-                    rotateLeft(p);
-                    rotateRight(g);
+                else if (grandP->getLeft() == parent && parent->getRight() == n)
+                { // zig zag case
+                    rotateLeft(parent);
+                    rotateRight(grandP);
                     if (n->getBalance() == -1)
                     {
-                        p->setBalance(0);
-                        g->setBalance(1);
+                        parent->setBalance(0);
+                        grandP->setBalance(1);
                         n->setBalance(0);
                     }
                     else if (n->getBalance() == 0)
                     {
-                        p->setBalance(0);
-                        g->setBalance(0);
+                        parent->setBalance(0);
+                        grandP->setBalance(0);
                         n->setBalance(0);
                     }
                     else if (n->getBalance() == 1)
                     {
-                        p->setBalance(-1);
-                        g->setBalance(0);
+                        parent->setBalance(-1);
+                        grandP->setBalance(0);
                         n->setBalance(0);
                     }
                 }
             }
         }
-        else if (g->getRight() == p)
+        else if (grandP->getRight() == parent)
         {
-            g->updateBalance(1);
-            if (g->getBalance() == 0)
+            grandP->updateBalance(1);
+            if (grandP->getBalance() == 0)
             {
                 return;
             }
-            else if (g->getBalance() == 1)
+            else if (grandP->getBalance() == 1)
             {
-                insertFix(g, p);
+                insertFix(grandP, parent);
             }
-            else if (g->getBalance() == 2)
+            else if (grandP->getBalance() == 2)
             {
-                if (g->getRight() == p && p->getRight() == n)
-                {
-                    rotateLeft(g);
-                    g->setBalance(0);
-                    p->setBalance(0);
+                if (grandP->getRight() == parent && parent->getRight() == n)
+                { // zig zig case
+                    rotateLeft(grandP);
+                    grandP->setBalance(0);
+                    parent->setBalance(0);
                 }
-                else if (g->getRight() == p && p->getLeft() == n)
-                {
-                    rotateRight(p);
-                    rotateLeft(g);
+                if (grandP->getRight() == parent && parent->getLeft() == n)
+                { // zig zag case
+                    rotateRight(parent);
+                    rotateLeft(grandP);
                     if (n->getBalance() == 1)
                     {
-                        p->setBalance(0);
-                        g->setBalance(-1);
+                        parent->setBalance(0);
+                        grandP->setBalance(-1);
                         n->setBalance(0);
                     }
                     else if (n->getBalance() == 0)
                     {
-                        p->setBalance(0);
-                        g->setBalance(0);
+                        parent->setBalance(0);
+                        grandP->setBalance(0);
                         n->setBalance(0);
                     }
                     else if (n->getBalance() == -1)
                     {
-                        p->setBalance(1);
-                        g->setBalance(0);
+                        parent->setBalance(1);
+                        grandP->setBalance(0);
                         n->setBalance(0);
                     }
                 }
