@@ -8,7 +8,6 @@
 #include <algorithm>
 #include "bst.h"
 
-
 struct KeyError
 {
 };
@@ -345,95 +344,99 @@ void AVLTree<Key, Value>::nodeSwap(AVLNode<Key, Value> *n1, AVLNode<Key, Value> 
 template <class Key, class Value>
 void AVLTree<Key, Value>::insertFix(AVLNode<Key, Value> *p, AVLNode<Key, Value> *n)
 {
-    if (p == nullptr || p->getParent() == nullptr)
+    if ((p->getBalance() == 1 || p->getBalance() == -1 || p->getBalance() == 0) && (n->getBalance() == 1 || n->getBalance() == -1 || n->getBalance() == 0))
     {
-        return;
-    }
-    AVLNode<Key, Value> *g = p->getParent();
-    if (g->getLeft() == p)
-    {
-        g->updateBalance(-1);
-        if (g->getBalance() == 0)
+        if (p == nullptr || p->getParent() == nullptr)
         {
             return;
         }
-        else if (g->getBalance() == -1)
+
+        AVLNode<Key, Value> *g = p->getParent();
+        if (g->getLeft() == p)
         {
-            insertFix(g, p);
-        }
-        else if (g->getBalance() == -2)
-        {
-            if (g->getLeft() == p && p->getLeft() == n)
+            g->updateBalance(-1);
+            if (g->getBalance() == 0)
             {
-                rotateRight(g);
-                p->setBalance(0);
-                g->setBalance(0);
+                return;
             }
-            else if (g->getLeft() == p && p->getRight() == n)
+            else if (g->getBalance() == -1)
             {
-                rotateLeft(p);
-                rotateRight(g);
-                if (n->getBalance() == -1)
+                insertFix(g, p);
+            }
+            else if (g->getBalance() == -2)
+            {
+                if (g->getLeft() == p && p->getLeft() == n)
                 {
-                    p->setBalance(0);
-                    g->setBalance(1);
-                    n->setBalance(0);
-                }
-                else if (n->getBalance() == 0)
-                {
+                    rotateRight(g);
                     p->setBalance(0);
                     g->setBalance(0);
-                    n->setBalance(0);
                 }
-                else if (n->getBalance() == 1)
+                else if (g->getLeft() == p && p->getRight() == n)
                 {
-                    p->setBalance(-1);
-                    g->setBalance(0);
-                    n->setBalance(0);
+                    rotateLeft(p);
+                    rotateRight(g);
+                    if (n->getBalance() == -1)
+                    {
+                        p->setBalance(0);
+                        g->setBalance(1);
+                        n->setBalance(0);
+                    }
+                    else if (n->getBalance() == 0)
+                    {
+                        p->setBalance(0);
+                        g->setBalance(0);
+                        n->setBalance(0);
+                    }
+                    else if (n->getBalance() == 1)
+                    {
+                        p->setBalance(-1);
+                        g->setBalance(0);
+                        n->setBalance(0);
+                    }
                 }
             }
         }
-    }
-    else if (g->getRight() == p)
-    {
-        g->updateBalance(1);
-        if (g->getBalance() == 0)
+        else if (g->getRight() == p)
         {
-            return;
-        }
-        else if (g->getBalance() == 1)
-        {
-            insertFix(g, p);
-        }
-        else if (g->getBalance() == 2)
-        {
-            if (g->getRight() == p && p->getRight() == n)
+            g->updateBalance(1);
+            if (g->getBalance() == 0)
             {
-                rotateLeft(g);
-                p->setBalance(0);
-                g->setBalance(0);
+                return;
             }
-            else if (g->getRight() == p && p->getLeft() == n)
+            else if (g->getBalance() == 1)
             {
-                rotateRight(p);
-                rotateLeft(g);
-                if (n->getBalance() == 1)
+                insertFix(g, p);
+            }
+            else if (g->getBalance() == 2)
+            {
+                if (g->getRight() == p && p->getRight() == n)
                 {
-                    p->setBalance(0);
-                    g->setBalance(-1);
-                    n->setBalance(0);
-                }
-                else if (n->getBalance() == 0)
-                {
+                    rotateLeft(g);
                     p->setBalance(0);
                     g->setBalance(0);
-                    n->setBalance(0);
                 }
-                else if (n->getBalance() == -1)
+                else if (g->getRight() == p && p->getLeft() == n)
                 {
-                    p->setBalance(1);
-                    g->setBalance(0);
-                    n->setBalance(0);
+                    rotateRight(p);
+                    rotateLeft(g);
+                    if (n->getBalance() == 1)
+                    {
+                        p->setBalance(0);
+                        g->setBalance(-1);
+                        n->setBalance(0);
+                    }
+                    else if (n->getBalance() == 0)
+                    {
+                        p->setBalance(0);
+                        g->setBalance(0);
+                        n->setBalance(0);
+                    }
+                    else if (n->getBalance() == -1)
+                    {
+                        p->setBalance(1);
+                        g->setBalance(0);
+                        n->setBalance(0);
+                    }
                 }
             }
         }
@@ -575,34 +578,34 @@ void AVLTree<Key, Value>::removeFix(AVLNode<Key, Value> *n, int8_t diff)
 template <class Key, class Value>
 void AVLTree<Key, Value>::rotateLeft(AVLNode<Key, Value> *p)
 {
-    if (p == nullptr || p->getLeft() == nullptr) 
+    if (p == nullptr || p->getLeft() == nullptr)
     {
-        return; 
+        return;
     }
-    AVLNode<Key, Value>* n = p->getLeft(); 
-    p->setLeft(p->getRight()); 
-    n->setRight(p); 
-    p->setBalance(std::max(p->getRight()->getBalance(), p->getLeft()->getBalance()) + 1); 
-    n->setBalance(std::max(n->getRight()->getBalance(), n->getLeft()->getBalance()) + 1); 
-    p = n; 
+    AVLNode<Key, Value> *n = p->getLeft();
+    p->setLeft(p->getRight());
+    n->setRight(p);
+    p->setBalance(std::max(p->getRight()->getBalance(), p->getLeft()->getBalance()) + 1);
+    n->setBalance(std::max(n->getRight()->getBalance(), n->getLeft()->getBalance()) + 1);
+    p = n;
 }
 
 template <class Key, class Value>
 void AVLTree<Key, Value>::rotateRight(AVLNode<Key, Value> *p)
 {
-    //take the right child make it the parent
-    //make the parent make it the left child
-    //promote the grandchild to the right child
-    if (p == nullptr || p->getRight() == nullptr) 
+    // take the right child make it the parent
+    // make the parent make it the left child
+    // promote the grandchild to the right child
+    if (p == nullptr || p->getRight() == nullptr)
     {
-        return; 
+        return;
     }
-    AVLNode<Key, Value>* n = p->getRight(); 
-    p->setRight(p->getLeft()); 
-    n->setLeft(p); 
-    p->setBalance(std::max(p->getRight()->getBalance(), p->getLeft()->getBalance()) + 1); 
-    n->setBalance(std::max(n->getRight()->getBalance(), n->getLeft()->getBalance()) + 1); 
-    p = n; 
+    AVLNode<Key, Value> *n = p->getRight();
+    p->setRight(p->getLeft());
+    n->setLeft(p);
+    p->setBalance(std::max(p->getRight()->getBalance(), p->getLeft()->getBalance()) + 1);
+    n->setBalance(std::max(n->getRight()->getBalance(), n->getLeft()->getBalance()) + 1);
+    p = n;
 }
 
 #endif
