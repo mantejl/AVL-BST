@@ -659,7 +659,7 @@ BinarySearchTree<Key, Value>::getSmallestNode() const
     Node<Key, Value> *c = root_;
     while (c ->getLeft() != NULL)
     {
-			c = c->getLeft();
+		c = c->getLeft();
     }
     return c;
 }

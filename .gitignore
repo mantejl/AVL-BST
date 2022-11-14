@@ -76,3 +76,4 @@ bst-test
 *.dSYM
 .clang-format
 .clang-tidy
+.vscode
