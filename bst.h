@@ -631,6 +631,7 @@ template <typename Key, typename Value>
 void BinarySearchTree<Key, Value>::clear()
 {
     deleteNode(root_); 
+    root_ = nullptr;
 }
 
 // helper function for delete
@@ -644,7 +645,6 @@ void BinarySearchTree<Key, Value>::deleteNode(Node<Key, Value> *c)
     }
     deleteNode(c->getLeft());
     deleteNode(c->getRight());
-    c = NULL;
     delete c;
 }
 
